@@ -2,6 +2,7 @@ import * as types from './../types'
 import { HOST } from './../../component/Host'
 import jwt from 'jsonwebtoken'
 import axios from 'axios'
+import { message } from 'antd'
 
 export const handleLogin = (params) => ({
     type: types.LOGIN,

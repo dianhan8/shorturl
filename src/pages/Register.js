@@ -2,8 +2,9 @@ import React, { Fragment } from 'react'
 import { Row, Col, Form, Input, Icon, Select, Button, message } from 'antd'
 import { withRouter, Link } from 'react-router-dom'
 import { Title, Desc } from '../component/Utils'
-import {connect} from 'react-redux'
+import { connect } from 'react-redux'
 import * as actUsers from './../redux/actions/actionsUsers'
+import {push } from 'connected-react-router'
 
 const { Option } = Select;
 class Register extends React.Component {
@@ -12,19 +13,6 @@ class Register extends React.Component {
         this.state = {
             onSubmit: false,
             confirmDirty: false,
-        }
-    }
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        if (this.state.onSubmit === true) {
-            if (nextProps.users.isLoad === false) {
-                if (nextProps.users.status === 500) {
-                    message.error("Mohon maaf ada kesalahan pada server kami.")
-                }else if(nextProps.users.status === 202){
-                    message.info(nextProps.users.data.message)
-                }else if(nextProps.users.status === 201){
-                    message.success(nextProps.users.data.message)
-                }
-            }
         }
     }
     handleRegister = e => {
@@ -39,7 +27,14 @@ class Register extends React.Component {
                 })
             }
         })
-        this.setState({onSubmit: true})
+        setTimeout(() => this.hasSuccess(), 500)
+        this.setState({ onSubmit: true })
+    }
+    hasSuccess = async () => {
+        const { success } = this.props.users
+        if(success === true){
+            this.props.history.push('/login')
+        }
     }
     handleConfirmBlur = e => {
         const { value } = e.target;
@@ -83,7 +78,7 @@ class Register extends React.Component {
                         }}
                     >
                         <Title text='Sign Up' />
-                        <Desc text='Create account for enjoy short many url.'/>
+                        <Desc text='Create account for enjoy short many url.' />
                         <Form className='form' onSubmit={this.handleRegister}>
                             <Form.Item>
                                 {getFieldDecorator('name', {
@@ -143,7 +138,11 @@ class Register extends React.Component {
                             </Form.Item>
                             <Form.Item>
                                 {getFieldDecorator('phone', {
-                                    rules: [{ required: true, message: 'Please input your phone number!' }],
+                                    rules: [
+                                        {required: true, message: 'Please input your phone number!' },
+                                        {min: 11, message: 'This not phone number.'},
+                                        {max: 12, message: 'This not phone number.'}
+                                    ],
                                 })(
                                     <Input
                                         addonBefore={prefixSelector}
@@ -172,7 +171,7 @@ const FormRegister = Form.create({ name: 'form-register' })(Register)
 
 const stateToProps = state => {
     return {
-        users : state.users
+        users: state.users
     }
 }
 const dispatchToProps = dispatch => {

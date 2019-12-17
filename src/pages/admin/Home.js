@@ -10,7 +10,7 @@ class Home extends React.Component {
         const menu = (
             <Menu>
                 <Menu.Item>
-                    <Link>
+                    <Link to='/user/dashboard/link'>
                         Lebih rinci
                     </Link>
                 </Menu.Item>

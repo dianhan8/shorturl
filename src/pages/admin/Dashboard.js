@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Col, Row, Menu, Breadcrumb } from 'antd'
+import { Col, Row, Menu, Tag, Alert, Button } from 'antd'
 import { BrowserRouter, Route, withRouter, Link, useParams, Switch } from 'react-router-dom'
 import { connect } from 'react-redux'
 import { Icon } from 'antd'
@@ -9,7 +9,7 @@ import LinkPages from './Link'
 import Home from './Home'
 import Click from './component/Click'
 import LimitSection from './component/Limit'
-import * as act  from './../../redux/actions/actionsUsers'
+import * as act from './../../redux/actions/actionsUsers'
 import { NotifSuccess } from '../../component/Notification'
 
 class Dashboard extends React.Component {
@@ -19,14 +19,14 @@ class Dashboard extends React.Component {
             this.props.history.replace('/login')
         }
         this.props.sendToken()
-        this.interval = setInterval(()=> this.autoClose(), 5000)
+        this.interval = setInterval(() => this.autoClose(), 5000)
     }
     autoClose = async () => {
         const time = new Date(this.props.user.expired)
         const timeNow = new Date()
-        if(time < timeNow){
+        if (time < timeNow) {
             const props = {
-                message :'Your token has be expired',
+                message: 'Your token has be expired',
                 desc: 'you can get again will you login.'
             }
             NotifSuccess(props)
@@ -34,7 +34,7 @@ class Dashboard extends React.Component {
             this.props.history.replace('/login')
         }
     }
-    componentWillUnmount(){
+    componentWillUnmount() {
         clearInterval(this.interval)
     }
     render() {
@@ -60,6 +60,12 @@ class Dashboard extends React.Component {
                                 <Icon type="setting" /> Setting
                             </Link>
                         </Menu.Item>
+                        <Menu.Item disabled>
+                            <Link to='/user/dashboard/payment'>
+                                <Icon type="wallet" /> Payment
+                                <Tag color="green" style={{ marginLeft: 20 }}>comming soon</Tag>
+                            </Link>
+                        </Menu.Item>
                         <Menu.Item>
                             <Link to='/user/dashboard/update'>
                                 <Icon type="info" /> Update
@@ -74,12 +80,28 @@ class Dashboard extends React.Component {
                     </Switch>
                 </Col>
                 <Col span={4} className='pr-10'>
+                    {
+                        this.props.verifyEmail == false &&
+                        <>
+                        <Alert
+                            message={
+                                <span>
+                                Your e-mail not confirmation. click this for 
+                                 <a href=''> confirm</a>.
+                                </span>
+                            }
+                            type='warning'
+                            closable
+                        />
+                        <div className='mb-5'></div>
+                        </>
+                    }
+
                     <Click />
                     <div className='mb-5'></div>
-                    {this.props.user.premium === false? 
-                    
-                    <LimitSection data={this.props.user}/>
-                    : null}
+                    {this.props.user.premium === false &&
+                        <LimitSection data={this.props.user} />
+                    }
                 </Col>
             </Row>
         )
@@ -87,12 +109,13 @@ class Dashboard extends React.Component {
 }
 const stateToProps = state => {
     return {
-        user: state.users.users
+        user: state.users.users,
+        verifyEmail: state.users.users.verifyByEmail
     }
 }
 const dispatchToProps = dispatch => {
     return {
-        sendToken: ()=> dispatch(act.getUserFromToken())
+        sendToken: () => dispatch(act.getUserFromToken())
     }
 }
-export default connect(stateToProps,dispatchToProps)(withRouter(Dashboard))
+export default connect(stateToProps, dispatchToProps)(withRouter(Dashboard))

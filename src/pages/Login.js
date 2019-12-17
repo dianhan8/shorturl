@@ -18,32 +18,10 @@ class Login extends React.Component {
             password: ''
         }
     }
-    UNSAFE_componentWillReceiveProps(nextProps) {
-        if (this.state.onSubmit === true) {
-            if (nextProps.users.isLoad === false) {
-                if (nextProps.users.status === 204) {
-                    message.info(<span>{nextProps.users.data.message}</span>)
-                    this.props.users.isLoad = true
-                    nextProps.users.isLoad = true
-                } else if (nextProps.users.status === 200) {
-                    message.success(<span>Success, Automatic redirect to Dashboard</span>,3)
-                    localStorage.setItem('token', nextProps.users.data.token)
-                    this.props.users.isLoad = true
-                    nextProps.users.isLoad = true
-                    this.props.history.push('/user/dashboard')
-                } else if (nextProps.users.status === 404) {
-                    message.error(<span>{nextProps.users.data}</span>)
-                    this.props.users.isLoad = true
-                    nextProps.users.isLoad = true
-                } else if (nextProps.users.status === 301) {
-                    message.info(nextProps.users.data.message)
-                    this.props.users.isLoad = true
-                    nextProps.users.isLoad = true
-                }
-                this.setState({ onSubmit: false })
-            } else if(this.props.users.isLoad === true){
-                message.loading('Loading')
-            }
+    hasSuccess = async()=>{
+        const { success } = this.props.users
+        if(success === true){
+            this.props.history.push('/user/dashboard')
         }
     }
     handleLogin = e => {
@@ -59,6 +37,7 @@ class Login extends React.Component {
         this.setState({
             onSubmit: true
         })
+        setTimeout(()=> this.hasSuccess(), 500)
     }
     render() {
         const { getFieldDecorator } = this.props.form

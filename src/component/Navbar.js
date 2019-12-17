@@ -27,6 +27,15 @@ function Menus(props) {
 }
 
 class AppNavbar extends React.Component {
+    componentDidMount() {
+        this.autoLinking()
+    }
+    autoLinking = async () => {
+        const token = await localStorage.getItem('token')
+        if (token) {
+            this.props.history.push('/user/dashboard')
+        }
+    }
     render() {
         const logout = async () => {
             await localStorage.clear()
