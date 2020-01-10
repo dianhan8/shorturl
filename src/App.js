@@ -43,9 +43,11 @@ export default class App extends React.Component {
                 <Route path='/login' component={LoginPage}/>
                 <Route path='/register' component={RegisterPage}/>
                 <Route path='*' component={NotFoundPage}/> 
-                {routes.map((route, i)=>(
-                  <Route path={route.path} component={route.component} />
-                ))}
+                {routes.map(function(route, i){
+                  return (
+                    <Route path={route.path} component={route.component}/>
+                  )
+                })}
               </Switch>
             </BrowserRouter>
           </Router>
