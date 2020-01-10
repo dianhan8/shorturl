@@ -18,6 +18,17 @@ import Dashboard from './pages/admin/Dashboard'
 
 const store = configureStore()
 
+const routes = [
+  {
+    path: '/user/dashboard',
+    component: {Dashboard}
+  },
+  {
+    path: '/about',
+    component: {Dashboard}
+  },
+]
+
 export default class App extends React.Component {
   render() {
     return (
@@ -28,12 +39,13 @@ export default class App extends React.Component {
               <Navbar />
               <Switch>
                 <Route exact path='/' component={HomePage} />
-                <Route path='/about' component={AboutPage} />
                 <Route path='/contact' component={ContactPage} />
                 <Route path='/login' component={LoginPage}/>
                 <Route path='/register' component={RegisterPage}/>
-                <Route path='/user/dashboard' component={Dashboard}/>
-                <Route path='*' component={NotFoundPage}/>
+                <Route path='*' component={NotFoundPage}/> 
+                {routes.map((route, i)=>(
+                  <Route path={route.path} component={route.component} />
+                )}
               </Switch>
             </BrowserRouter>
           </Router>
