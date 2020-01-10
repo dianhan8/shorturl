@@ -45,7 +45,7 @@ export default class App extends React.Component {
                 <Route path='*' component={NotFoundPage}/> 
                 {routes.map((route, i)=>(
                   <Route path={route.path} component={route.component} />
-                )}
+                ))}
               </Switch>
             </BrowserRouter>
           </Router>
